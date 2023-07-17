@@ -20,18 +20,13 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Generate change log
-        uses: gradle/gradle-build-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          arguments: generateChangelog -Pversion=${{ inputs.version }}
-
       # The publishToSonatype task and the repository release need to be in the same Gradle call
       # so that the closeAndRelease task knows which staging repository was created by publishToSonatype
       - name: Build and publish to OSS Sonatype and then Maven Central
         uses: gradle/gradle-build-action@v2
         env:
+          # For changelog generation
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # GPG keys for signing plugin (sign maven artifacts)
           # see https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET_ASCII_ARMORED }}
@@ -43,6 +38,7 @@ jobs:
         with:
           arguments: |
             check
+            generateChangelog
             publishToSonatype
             closeAndReleaseSonatypeStagingRepository
             -Pversion=${{ inputs.version }}
