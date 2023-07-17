@@ -7,7 +7,7 @@ import kotlinx.serialization.json.*
  */
 object SocketIO {
 
-    private val packetFormatRegex = Regex("""(?<packetType>\d)(?<nBinaryAttachments>\d-)?((?<namespace>/[^,]+),)?(?<ackId>\d+)?(?<payload>.*)?""")
+    private val packetFormatRegex = Regex("""(?<packetType>\d)((?<nBinaryAttachments>\d+)-)?((?<namespace>/[^,]+),)?(?<ackId>\d+)?(?<payload>.*)?""")
 
     /**
      * Decodes the given [encodedData] into a [SocketIOPacket].
