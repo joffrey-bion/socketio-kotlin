@@ -9,7 +9,7 @@ plugins {
     id("ru.vyarus.github-info") version "1.5.0"
 }
 
-group = "org.hildan.har"
+group = "org.hildan.socketio"
 description = "A Kotlin parser for Socket.IO / Engine.IO packet decoding"
 
 github {
