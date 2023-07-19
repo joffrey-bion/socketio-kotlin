@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.1.2](https://github.com/joffrey-bion/socketio-kotlin/tree/0.1.2) (2023-07-19)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.1.1...0.1.2)
+
+
 ## [0.1.1](https://github.com/joffrey-bion/socketio-kotlin/tree/0.1.1) (2023-07-19)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.1.0...0.1.1)
 
