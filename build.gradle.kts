@@ -50,7 +50,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             }
         }
     }
