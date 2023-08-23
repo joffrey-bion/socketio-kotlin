@@ -54,6 +54,9 @@ private data class RawPacket(
     }
 }
 
+// This is not clearly documented in the protocol spec, but the payload for CONNECT has been added in v5 and the
+// official socket.io-parser v4 (for protocol v5) has the following validation:
+// https://github.com/socketio/socket.io-parser/blob/164ba2a11edc34c2f363401e9768f9a8541a8b89/lib/index.ts#L285-L305
 private fun RawPacket.connectPayload(): JsonObject? {
     if (payload == null) {
         return null
@@ -61,6 +64,7 @@ private fun RawPacket.connectPayload(): JsonObject? {
     return payload as? JsonObject ?: invalid("The payload for CONNECT packets must be a JSON object")
 }
 
+// Reference: https://socket.io/docs/v4/socket-io-protocol#sending-and-receiving-data
 private fun RawPacket.messagePayload(): JsonArray {
     if (payload == null) {
         invalid("The payload for EVENT and ACK packets is mandatory")
