@@ -6,7 +6,7 @@ plugins {
     signing
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("org.hildan.github.changelog") version "2.0.0"
-    id("org.hildan.kotlin-publish") version "1.2.0"
+    id("org.hildan.kotlin-publish") version "1.3.0"
     id("ru.vyarus.github-info") version "1.5.0"
 }
 
