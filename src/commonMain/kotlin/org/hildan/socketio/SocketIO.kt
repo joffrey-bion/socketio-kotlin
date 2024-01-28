@@ -1,5 +1,6 @@
 package org.hildan.socketio
 
+import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
 /**
@@ -12,13 +13,16 @@ object SocketIO {
     /**
      * Decodes the given [encodedData] into a [SocketIOPacket].
      *
+     * The [encodedData] must be the pure Socket.IO packet data, not wrapped in an Engine.IO packet.
+     *
      * Binary packet types are not supported. Binary attachments are passed in subsequent web socket frames
      * (1 frame per attachment), and thus cannot be handled in this single-frame decoding function.
      */
     fun decode(encodedData: String): SocketIOPacket = parseRawPacket(encodedData).toSocketIOPacket()
 
     private fun parseRawPacket(encodedData: String): RawPacket {
-        val match = packetFormatRegex.matchEntire(encodedData) ?: throw InvalidSocketIOPacketException(encodedData)
+        val match = packetFormatRegex.matchEntire(encodedData)
+            ?: throw InvalidSocketIOPacketException(encodedData, "Invalid Socket.IO packet: $encodedData")
         return RawPacket(
             encodedData = encodedData,
             packetType = match.groups["packetType"]?.value?.toInt()
@@ -26,8 +30,14 @@ object SocketIO {
             nBinaryAttachments = match.groups["nBinaryAttachments"]?.value?.toInt() ?: 0,
             namespace = match.groups["namespace"]?.value ?: "/",
             ackId = match.groups["ackId"]?.value?.toInt(),
-            payload = match.groups["payload"]?.value?.takeIf { it.isNotBlank() }?.let { Json.parseToJsonElement(it) }
+            payload = match.groups["payload"]?.value?.takeIf { it.isNotBlank() }?.let { parsePayload(encodedData, it) }
         )
+    }
+
+    private fun parsePayload(encodedData: String, payload: String) = try {
+        Json.parseToJsonElement(payload)
+    } catch (e: SerializationException) {
+        throw InvalidSocketIOPacketException(encodedData, "The payload is not valid JSON: $payload", cause = e)
     }
 
     private fun RawPacket.toSocketIOPacket(): SocketIOPacket = when (packetType) {
@@ -55,7 +65,7 @@ private data class RawPacket(
 }
 
 // This is not clearly documented in the protocol spec, but the payload for CONNECT has been added in v5 and the
-// official socket.io-parser v4 (for protocol v5) has the following validation:
+// official socket.io-parser v4 (for protocol v5) has the following validation which expects JSON object in this case:
 // https://github.com/socketio/socket.io-parser/blob/164ba2a11edc34c2f363401e9768f9a8541a8b89/lib/index.ts#L285-L305
 private fun RawPacket.connectPayload(): JsonObject? {
     if (payload == null) {
@@ -86,8 +96,8 @@ private fun RawPacket.invalid(message: String): Nothing = throw InvalidSocketIOP
  * An exception thrown when some encoded data doesn't represent a valid Socket.IO packet as defined by the
  * [Socket.IO protocol](https://socket.io/docs/v4/socket-io-protocol).
  */
-@Suppress("MemberVisibilityCanBePrivate")
 class InvalidSocketIOPacketException(
     val encodedData: String,
-    message: String = "Invalid Socket.IO packet: $encodedData",
-) : Exception(message)
+    message: String,
+    cause: Throwable? = null,
+) : Exception(message, cause)
