@@ -56,6 +56,8 @@ object EngineIO {
      */
     @Suppress("MemberVisibilityCanBePrivate")
     fun <T> decodeBatch(batch: String, deserializePayload: (String) -> T): List<EngineIOPacket<T>> {
+        // Splitting on the "record-separator" character as defined by the protocol:
+        // https://socket.io/docs/v4/engine-io-protocol#http-long-polling-1
         return batch.split("\u001e").map { decodeFrame(it, deserializePayload) }
     }
 
