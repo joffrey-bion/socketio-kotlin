@@ -8,7 +8,7 @@ plugins {
     signing
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("org.hildan.github.changelog") version "2.0.0"
-    id("org.hildan.kotlin-publish") version "1.3.0"
+    id("org.hildan.kotlin-publish") version "1.4.0"
     id("ru.vyarus.github-info") version "1.5.0"
 }
 
@@ -101,22 +101,4 @@ signing {
     val signingPassword: String? by project
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign(extensions.getByType<PublishingExtension>().publications)
-}
-
-// Resolves issues with .asc task output of the sign task of native targets.
-// See: https://github.com/gradle/gradle/issues/26132
-// And: https://youtrack.jetbrains.com/issue/KT-46466
-tasks.withType<Sign>().configureEach {
-    val pubName = name.removePrefix("sign").removeSuffix("Publication")
-
-    // These tasks only exist for native targets, hence findByName() to avoid trying to find them for other targets
-
-    // Task ':linkDebugTest<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
-    tasks.findByName("linkDebugTest$pubName")?.let {
-        mustRunAfter(it)
-    }
-    // Task ':compileTestKotlin<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
-    tasks.findByName("compileTestKotlin$pubName")?.let {
-        mustRunAfter(it)
-    }
 }
