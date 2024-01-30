@@ -31,6 +31,8 @@ repositories {
 
 @OptIn(ExperimentalWasmDsl::class)
 kotlin {
+    jvmToolchain(11)
+
     jvm()
     js {
         browser()
