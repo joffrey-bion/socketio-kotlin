@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.4.1](https://github.com/joffrey-bion/socketio-kotlin/tree/0.4.1) (2024-01-30)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.4.0...0.4.1)
+
+**Implemented enhancements:**
+
+- Ensure JVM toolchain 11 is used for better compatibility [\#31](https://github.com/joffrey-bion/socketio-kotlin/issues/31)
+
 ## [0.4.0](https://github.com/joffrey-bion/socketio-kotlin/tree/0.4.0) (2024-01-29)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.3.0...0.4.0)
 
