@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.7.0](https://github.com/joffrey-bion/socketio-kotlin/tree/0.7.0) (2024-05-26)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.6.0...0.7.0)
+
+**Implemented enhancements:**
+
+- Add `wasmWasi/nodejs` target [\#58](https://github.com/joffrey-bion/socketio-kotlin/issues/58)
+- Add `wasmJs/nodejs` and `wasmJs/d8` targets [\#57](https://github.com/joffrey-bion/socketio-kotlin/issues/57)
+- Add `linuxArm64` target [\#56](https://github.com/joffrey-bion/socketio-kotlin/issues/56)
+
 ## [0.6.0](https://github.com/joffrey-bion/socketio-kotlin/tree/0.6.0) (2024-05-26)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.5.1...0.6.0)
 
