@@ -58,7 +58,9 @@ kotlin {
         nodejs()
         d8()
     }
-    wasmWasi()
+    wasmWasi {
+        nodejs()
+    }
 
     sourceSets {
         commonMain {
