@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 
 plugins {
@@ -66,7 +67,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(kotlin("test-junit"))
+                implementation(kotlin("test"))
             }
         }
     }
