@@ -55,6 +55,8 @@ kotlin {
     tvosSimulatorArm64()
     wasmJs {
         browser()
+        nodejs()
+        d8()
     }
     wasmWasi()
 
