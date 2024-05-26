@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.6.0](https://github.com/joffrey-bion/socketio-kotlin/tree/0.6.0) (2024-05-26)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.5.1...0.6.0)
+
+**Upgraded dependencies:**
+
+- Bump kotlin from 1.9.24 to 2.0.0 [\#55](https://github.com/joffrey-bion/socketio-kotlin/pull/55) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.jetbrains.kotlinx:kotlinx\-io\-bytestring from 0.3.4 to 0.3.5 [\#54](https://github.com/joffrey-bion/socketio-kotlin/pull/54) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [0.5.1](https://github.com/joffrey-bion/socketio-kotlin/tree/0.5.1) (2024-03-19)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.5.0...0.5.1)
 
