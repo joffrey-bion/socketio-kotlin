@@ -31,7 +31,7 @@ repositories {
 
 @OptIn(ExperimentalWasmDsl::class)
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 
     jvm()
     js {
