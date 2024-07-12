@@ -16,6 +16,9 @@ object EngineIO {
      *
      * This is meant to be used in web socket mode, where each web socket frame contains a single Engine.IO packet.
      * When using HTTP long-polling with batched packets, use [decodeHttpBatch] instead.
+     *
+     * @throws InvalidEngineIOPacketException if the given [textFrame] is not a valid Engine.IO packet
+     * @throws InvalidSocketIOPacketException if the given [textFrame] does not contain a valid Socket.IO packet
      */
     fun decodeSocketIO(textFrame: String): EngineIOPacket<SocketIOPacket> = decodeWsFrame(textFrame, SocketIO::decode)
 
@@ -27,6 +30,8 @@ object EngineIO {
      *
      * This is meant to be used in web socket mode, where each web socket frame contains a single Engine.IO packet.
      * When using HTTP long-polling with batched packets, use [decodeHttpBatch] instead.
+     *
+     * @throws InvalidEngineIOPacketException if the given [text] is not a valid Engine.IO packet
      */
     fun <T> decodeWsFrame(text: String, deserializePayload: (String) -> T): EngineIOPacket<T> = decodeSinglePacket(
         encodedData = text,
@@ -59,6 +64,8 @@ object EngineIO {
      *
      * This is meant to be used in HTTP long-polling mode, where packets are batched in a single HTTP response.
      * When using web sockets, use [decodeWsFrame] on each frame instead.
+     *
+     * @throws InvalidEngineIOPacketException if the given [batch] contains an invalid Engine.IO packet
      */
     fun <T> decodeHttpBatch(
         batch: String,

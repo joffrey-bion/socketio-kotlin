@@ -17,6 +17,8 @@ object SocketIO {
      *
      * Binary packet types are not supported. Binary attachments are passed in subsequent web socket frames
      * (1 frame per attachment), and thus cannot be handled in this single-frame decoding function.
+     *
+     * @throws InvalidSocketIOPacketException if the given [encodedData] is not a valid Socket.IO packet
      */
     fun decode(encodedData: String): SocketIOPacket = parseRawPacket(encodedData).toSocketIOPacket()
 
