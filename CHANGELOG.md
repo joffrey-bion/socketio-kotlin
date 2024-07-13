@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.0.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.0.0) (2024-07-13)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.9.0...1.0.0)
+
+**Implemented enhancements:**
+
+- Add support for binary packets [\#67](https://github.com/joffrey-bion/socketio-kotlin/issues/67)
+- Upgrade target level to Java 17 [\#66](https://github.com/joffrey-bion/socketio-kotlin/issues/66)
+
+**Upgraded dependencies:**
+
+- Bump org.jetbrains.kotlinx:kotlinx\-io\-bytestring from 0.4.0 to 0.5.0 [\#65](https://github.com/joffrey-bion/socketio-kotlin/pull/65) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [0.9.0](https://github.com/joffrey-bion/socketio-kotlin/tree/0.9.0) (2024-06-30)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/0.8.0...0.9.0)
 
