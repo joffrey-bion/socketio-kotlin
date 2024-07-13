@@ -48,7 +48,8 @@ object SocketIO {
         2 -> SocketIOPacket.Event(namespace, ackId, payload = messagePayload())
         3 -> SocketIOPacket.Ack(namespace, ackId = mandatoryAckId(), payload = messagePayload())
         4 -> SocketIOPacket.ConnectError(namespace, errorData = payload)
-        5, 6 -> throw IllegalArgumentException("Binary Socket.IO packets are not supported")
+        5 -> SocketIOPacket.BinaryEvent(namespace, ackId, payload = messagePayload().withPlaceholders(), nBinaryAttachments)
+        6 -> SocketIOPacket.BinaryAck(namespace, ackId = mandatoryAckId(), payload = messagePayload().withPlaceholders(), nBinaryAttachments)
         else -> invalid("Unknown Socket.IO packet type $packetType")
     }
 }
@@ -60,11 +61,22 @@ private data class RawPacket(
     val namespace: String,
     val ackId: Int?,
     val payload: JsonElement?,
-) {
-    init {
-        require(nBinaryAttachments == 0) { "Socket.IO packets with binary attachments are not supported" }
-    }
+)
+
+private fun JsonArray.withPlaceholders(): List<PayloadElement> = map { it.toPayloadElement() }
+
+private fun JsonElement.toPayloadElement(): PayloadElement = if (isBinaryPlaceholder) {
+    val attachmentIndex = jsonObject.getValue("num").jsonPrimitive.int
+    PayloadElement.AttachmentRef(attachmentIndex)
+} else {
+    PayloadElement.Json(this)
 }
+
+private val JsonElement.isBinaryPlaceholder: Boolean
+    get() = this is JsonObject
+        && size == 2
+        && (get("_placeholder") as? JsonPrimitive)?.booleanOrNull == true
+        && (get("num") as? JsonPrimitive)?.intOrNull != null
 
 // This is not clearly documented in the protocol spec, but the payload for CONNECT has been added in v5 and the
 // official socket.io-parser v4 (for protocol v5) has the following validation which expects JSON object in this case:

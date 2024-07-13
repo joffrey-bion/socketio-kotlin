@@ -205,18 +205,34 @@ class SocketIOTest {
     }
 
     @Test
-    fun binaryEvent_unsupported() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            SocketIO.decode("""51-["baz",{"_placeholder":true,"num":0}]""")
-        }
-        assertEquals("Socket.IO packets with binary attachments are not supported", exception.message)
+    fun binaryEvent() {
+        val packet = SocketIO.decode("""52-["baz",{"_placeholder":true,"num":0},{"type":"other_data"},{"_placeholder":true,"num":1}]""")
+        val expected = SocketIOPacket.BinaryEvent(
+            namespace = "/",
+            ackId = null,
+            nBinaryAttachments = 2,
+            payload = listOf(
+                PayloadElement.Json(JsonPrimitive("baz")),
+                PayloadElement.AttachmentRef(attachmentIndex = 0),
+                PayloadElement.Json(buildJsonObject { put("type", "other_data") }),
+                PayloadElement.AttachmentRef(attachmentIndex = 1),
+            ),
+        )
+        assertEquals(expected, packet)
     }
 
     @Test
-    fun binaryAck_unsupported() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            SocketIO.decode("""61-15["bar",{"_placeholder":true,"num":0}]""")
-        }
-        assertEquals("Socket.IO packets with binary attachments are not supported", exception.message)
+    fun binaryAck() {
+        val packet = SocketIO.decode("""61-15["bar",{"_placeholder":true,"num":0}]""")
+        val expected = SocketIOPacket.BinaryAck(
+            namespace = "/",
+            ackId = 15,
+            nBinaryAttachments = 1,
+            payload = listOf(
+                PayloadElement.Json(JsonPrimitive("bar")),
+                PayloadElement.AttachmentRef(attachmentIndex = 0),
+            ),
+        )
+        assertEquals(expected, packet)
     }
 }

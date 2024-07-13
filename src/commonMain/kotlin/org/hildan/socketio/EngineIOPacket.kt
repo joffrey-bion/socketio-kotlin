@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 /**
  * An Engine.IO packet, as defined in the [Engine.IO protocol](https://socket.io/docs/v4/engine-io-protocol).
  */
-sealed class EngineIOPacket<out T> {
+sealed interface EngineIOPacket<out T> {
 
     /**
      * Used during the handshake.
@@ -22,35 +22,35 @@ sealed class EngineIOPacket<out T> {
         val pingTimeout: Int,
         /** Optional, only useful when using long-polling as transport to know how many packets to batch together. */
         val maxPayload: Int? = null,
-    ) : EngineIOPacket<Nothing>()
+    ) : EngineIOPacket<Nothing>
 
     /**
      * Used to indicate that a transport can be closed.
      */
-    data object Close : EngineIOPacket<Nothing>()
+    data object Close : EngineIOPacket<Nothing>
 
     /**
      * Used during the upgrade process.
      */
-    data object Upgrade : EngineIOPacket<Nothing>()
+    data object Upgrade : EngineIOPacket<Nothing>
 
     /**
      * Used during the upgrade process.
      */
-    data object Noop : EngineIOPacket<Nothing>()
+    data object Noop : EngineIOPacket<Nothing>
 
     /**
      * Used in the heartbeat mechanism.
      */
-    data class Ping(val payload: String?) : EngineIOPacket<Nothing>()
+    data class Ping(val payload: String?) : EngineIOPacket<Nothing>
 
     /**
      * Used in the heartbeat mechanism.
      */
-    data class Pong(val payload: String?) : EngineIOPacket<Nothing>()
+    data class Pong(val payload: String?) : EngineIOPacket<Nothing>
 
     /**
      * Used to send a payload to the other side.
      */
-    data class Message<T>(val payload: T) : EngineIOPacket<T>()
+    data class Message<T>(val payload: T) : EngineIOPacket<T>
 }
