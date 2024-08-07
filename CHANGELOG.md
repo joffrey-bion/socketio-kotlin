@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.1.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.1.0) (2024-08-07)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.0.1...1.1.0)
+
+**Upgraded dependencies:**
+
+- Bump kotlinVersion from 2.0.0 to 2.0.10 [\#71](https://github.com/joffrey-bion/socketio-kotlin/pull/71) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [1.0.1](https://github.com/joffrey-bion/socketio-kotlin/tree/1.0.1) (2024-07-20)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.0.0...1.0.1)
 
