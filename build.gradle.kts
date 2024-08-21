@@ -78,9 +78,10 @@ kotlin {
 }
 
 nexusPublishing {
-    packageGroup.set("org.hildan")
     repositories {
-        sonatype()
+        sonatype {
+            stagingProfileId.set("org.hildan")
+        }
     }
 }
 
