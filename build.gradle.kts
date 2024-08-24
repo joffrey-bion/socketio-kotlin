@@ -1,10 +1,10 @@
 import com.vanniktech.maven.publish.*
 import org.jetbrains.dokka.gradle.*
-import org.jetbrains.kotlin.gradle.targets.js.dsl.*
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import java.net.*
 
 plugins {
-    val kotlinVersion = "2.0.10"
+    val kotlinVersion = "2.0.20"
     kotlin("multiplatform") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("org.jetbrains.dokka") version "1.9.20"
@@ -104,7 +104,7 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
                 sourceLink {
                     localDirectory.set(sourceRootDir)
                     // HEAD points to the default branch of the repo.
-                    remoteUrl.set(URL("${github.repositoryUrl}/blob/HEAD/$sourceRootRelativePath"))
+                    remoteUrl.set(URI("${github.repositoryUrl}/blob/HEAD/$sourceRootRelativePath").toURL())
                 }
             }
         }
