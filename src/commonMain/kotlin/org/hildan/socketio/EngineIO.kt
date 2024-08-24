@@ -58,6 +58,9 @@ object EngineIO {
     /**
      * Decodes the given [batch] text as a batch of [EngineIOPacket]s.
      *
+     * Individual packets in [batch] must be delimited by the "record separator" (U+001E) character, as defined in
+     * the [specification](https://socket.io/docs/v4/engine-io-protocol#http-long-polling-1).
+     *
      * If a packet is a [EngineIOPacket.Message] packet, the payload text is deserialized using the provided
      * [deserializeTextPayload] function. If the payload is binary, is it deserialized using [deserializeBinaryPayload]
      * instead. By default, [deserializeBinaryPayload] will decode the binary data as UTF-8 text.
