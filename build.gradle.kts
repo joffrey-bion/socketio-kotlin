@@ -1,14 +1,15 @@
+import com.vanniktech.maven.publish.*
+import org.jetbrains.dokka.gradle.*
 import org.jetbrains.kotlin.gradle.targets.js.dsl.*
+import java.net.*
 
 plugins {
     val kotlinVersion = "2.0.10"
     kotlin("multiplatform") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("org.jetbrains.dokka") version "1.9.20"
-    signing
-    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
     id("org.hildan.github.changelog") version "2.2.0"
-    id("org.hildan.kotlin-publish") version "1.6.0"
+    id("com.vanniktech.maven.publish") version "0.29.0"
     id("ru.vyarus.github-info") version "2.0.0"
 }
 
@@ -77,34 +78,38 @@ kotlin {
     }
 }
 
-nexusPublishing {
-    repositories {
-        sonatype {
-            stagingProfileId.set("org.hildan")
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.DEFAULT)
+    signAllPublications()
+
+    pom {
+        name.set(project.name)
+        description.set(project.description)
+
+        developers {
+            developer {
+                id.set("joffrey-bion")
+                name.set("Joffrey Bion")
+                email.set("joffrey.bion@gmail.com")
+            }
         }
     }
 }
 
-publishing {
-    // configureEach reacts on new publications being registered and configures them too
-    publications.configureEach {
-        if (this is MavenPublication) {
-            pom {
-                developers {
-                    developer {
-                        id.set("joffrey-bion")
-                        name.set("Joffrey Bion")
-                        email.set("joffrey.bion@gmail.com")
-                    }
+tasks.withType<AbstractDokkaLeafTask>().configureEach {
+    dokkaSourceSets {
+        configureEach {
+            sourceRoots.forEach { sourceRootDir ->
+                val sourceRootRelativePath = sourceRootDir.relativeTo(rootProject.projectDir).toSlashSeparatedString()
+                sourceLink {
+                    localDirectory.set(sourceRootDir)
+                    // HEAD points to the default branch of the repo.
+                    remoteUrl.set(URL("${github.repositoryUrl}/blob/HEAD/$sourceRootRelativePath"))
                 }
             }
         }
     }
 }
 
-signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(extensions.getByType<PublishingExtension>().publications)
-}
+// ensures slash separator even on Windows, useful for URLs creation
+private fun File.toSlashSeparatedString(): String = toPath().joinToString("/")
