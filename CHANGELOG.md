@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.2.2](https://github.com/joffrey-bion/socketio-kotlin/tree/1.2.2) (2024-09-20)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.2.1...1.2.2)
+
+**Upgraded dependencies:**
+
+- Bump org.jetbrains.kotlinx:kotlinx\-serialization\-json from 1.7.2 to 1.7.3 [\#83](https://github.com/joffrey-bion/socketio-kotlin/pull/83) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [1.2.1](https://github.com/joffrey-bion/socketio-kotlin/tree/1.2.1) (2024-09-18)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.2.0...1.2.1)
 
