@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.4.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.4.0) (2024-11-20)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.3.0...1.4.0)
+
+**Upgraded dependencies:**
+
+- Bump org.jetbrains.kotlinx:kotlinx\-io\-bytestring from 0.5.4 to 0.6.0 [\#89](https://github.com/joffrey-bion/socketio-kotlin/pull/89) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump com.gradle.develocity from 3.18.1 to 3.18.2 [\#88](https://github.com/joffrey-bion/socketio-kotlin/pull/88) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [1.3.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.3.0) (2024-10-11)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.2.2...1.3.0)
 
