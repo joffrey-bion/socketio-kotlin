@@ -7,7 +7,7 @@ plugins {
     val kotlinVersion = "2.0.21"
     kotlin("multiplatform") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
-    id("org.jetbrains.dokka") version "1.9.20"
+    id("org.jetbrains.dokka") version "2.0.0"
     id("org.hildan.github.changelog") version "2.2.0"
     id("com.vanniktech.maven.publish") version "0.30.0"
     id("ru.vyarus.github-info") version "2.0.0"
