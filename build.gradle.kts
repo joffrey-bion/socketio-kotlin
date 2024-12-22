@@ -1,5 +1,4 @@
 import com.vanniktech.maven.publish.*
-import org.jetbrains.dokka.gradle.*
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import java.net.*
 
@@ -96,7 +95,7 @@ mavenPublishing {
     }
 }
 
-tasks.withType<AbstractDokkaLeafTask>().configureEach {
+dokka {
     dokkaSourceSets {
         configureEach {
             sourceRoots.forEach { sourceRootDir ->
@@ -104,7 +103,7 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
                 sourceLink {
                     localDirectory.set(sourceRootDir)
                     // HEAD points to the default branch of the repo.
-                    remoteUrl.set(URI("${github.repositoryUrl}/blob/HEAD/$sourceRootRelativePath").toURL())
+                    remoteUrl("${github.repositoryUrl}/blob/HEAD/$sourceRootRelativePath")
                 }
             }
         }
