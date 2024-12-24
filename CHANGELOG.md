@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.6.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.6.0) (2024-12-24)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.5.0...1.6.0)
+
+**Implemented enhancements:**
+
+- Add encoder implementation [\#95](https://github.com/joffrey-bion/socketio-kotlin/issues/95)
+
 ## [1.5.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.5.0) (2024-12-22)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.4.0...1.5.0)
 
