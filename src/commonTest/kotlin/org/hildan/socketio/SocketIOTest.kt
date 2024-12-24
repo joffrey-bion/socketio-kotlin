@@ -26,18 +26,19 @@ class SocketIOTest {
 
     @Test
     fun connect() {
-        val packet = SocketIO.decode("0")
-        assertEquals(SocketIOPacket.Connect(namespace = "/", payload = null), packet)
+        val encodedData = "0"
+        val packet = SocketIOPacket.Connect(namespace = "/", payload = null)
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun connect_withData() {
-        val packet = SocketIO.decode("""0/admin,{"sid":"oSO0OpakMV_3jnilAAAA"}""")
-        val expected = SocketIOPacket.Connect(
+        val encodedData = """0/admin,{"sid":"oSO0OpakMV_3jnilAAAA"}"""
+        val packet = SocketIOPacket.Connect(
             namespace = "/admin",
             payload = buildJsonObject { put("sid", "oSO0OpakMV_3jnilAAAA") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
@@ -51,60 +52,60 @@ class SocketIOTest {
 
     @Test
     fun disconnect() {
-        val packet = SocketIO.decode("1")
-        val expected = SocketIOPacket.Disconnect(namespace = "/")
-        assertEquals(expected, packet)
+        val encodedData = "1"
+        val packet = SocketIOPacket.Disconnect(namespace = "/")
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun disconnect_withNamespace() {
-        val packet = SocketIO.decode("1/admin,")
-        val expected = SocketIOPacket.Disconnect(namespace = "/admin")
-        assertEquals(expected, packet)
+        val encodedData = "1/admin,"
+        val packet = SocketIOPacket.Disconnect(namespace = "/admin")
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun event() {
-        val packet = SocketIO.decode("""2["foo"]""")
-        val expected = SocketIOPacket.Event(
+        val encodedData = """2["foo"]"""
+        val packet = SocketIOPacket.Event(
             namespace = "/",
             ackId = null,
             payload = buildJsonArray { add("foo") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun event_withNamespace() {
-        val packet = SocketIO.decode("""2/admin,["bar"]""")
-        val expected = SocketIOPacket.Event(
+        val encodedData = """2/admin,["bar"]"""
+        val packet = SocketIOPacket.Event(
             namespace = "/admin",
             ackId = null,
             payload = buildJsonArray { add("bar") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun event_withAckId() {
-        val packet = SocketIO.decode("""212["foo"]""")
-        val expected = SocketIOPacket.Event(
+        val encodedData = """212["foo"]"""
+        val packet = SocketIOPacket.Event(
             namespace = "/",
             ackId = 12,
             payload = buildJsonArray { add("foo") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun event_withNamespaceAndAckId() {
-        val packet = SocketIO.decode("""2/something,42["foo"]""")
-        val expected = SocketIOPacket.Event(
+        val encodedData = """2/something,42["foo"]"""
+        val packet = SocketIOPacket.Event(
             namespace = "/something",
             ackId = 42,
             payload = buildJsonArray { add("foo") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
@@ -176,13 +177,13 @@ class SocketIOTest {
 
     @Test
     fun ack() {
-        val packet = SocketIO.decode("""3/admin,13["bar"]""")
-        val expected = SocketIOPacket.Ack(
+        val encodedData = """3/admin,13["bar"]"""
+        val packet = SocketIOPacket.Ack(
             namespace = "/admin",
             ackId = 13,
             payload = buildJsonArray { add("bar") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
@@ -196,18 +197,18 @@ class SocketIOTest {
 
     @Test
     fun connectError() {
-        val packet = SocketIO.decode("""4{"message":"Not authorized"}""")
-        val expected = SocketIOPacket.ConnectError(
+        val encodedData = """4{"message":"Not authorized"}"""
+        val packet = SocketIOPacket.ConnectError(
             namespace = "/",
             errorData = buildJsonObject { put("message", "Not authorized") },
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun binaryEvent() {
-        val packet = SocketIO.decode("""52-["baz",{"_placeholder":true,"num":0},{"type":"other_data"},{"_placeholder":true,"num":1}]""")
-        val expected = SocketIOPacket.BinaryEvent(
+        val encodedData = """52-["baz",{"_placeholder":true,"num":0},{"type":"other_data"},{"_placeholder":true,"num":1}]"""
+        val packet = SocketIOPacket.BinaryEvent(
             namespace = "/",
             ackId = null,
             nBinaryAttachments = 2,
@@ -218,13 +219,13 @@ class SocketIOTest {
                 PayloadElement.AttachmentRef(attachmentIndex = 1),
             ),
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
     }
 
     @Test
     fun binaryAck() {
-        val packet = SocketIO.decode("""61-15["bar",{"_placeholder":true,"num":0}]""")
-        val expected = SocketIOPacket.BinaryAck(
+        val encodedData = """61-15["bar",{"_placeholder":true,"num":0}]"""
+        val packet = SocketIOPacket.BinaryAck(
             namespace = "/",
             ackId = 15,
             nBinaryAttachments = 1,
@@ -233,6 +234,11 @@ class SocketIOTest {
                 PayloadElement.AttachmentRef(attachmentIndex = 0),
             ),
         )
-        assertEquals(expected, packet)
+        assertCodec(packet, encodedData)
+    }
+
+    private fun assertCodec(packet: SocketIOPacket, encodedData: String) {
+        assertEquals(packet, SocketIO.decode(encodedData))
+        assertEquals(encodedData, SocketIO.encode(packet))
     }
 }

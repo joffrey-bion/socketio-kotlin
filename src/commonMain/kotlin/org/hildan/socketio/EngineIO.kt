@@ -1,7 +1,9 @@
 package org.hildan.socketio
 
 import kotlinx.io.bytestring.*
+import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json.Default.encodeToString
 import kotlin.io.encoding.*
 
 /**
@@ -105,6 +107,55 @@ object EngineIO {
             'b' -> EngineIOPacket.Message(payload = deserializeBinaryPayload(Base64.decodeToByteString(payload)))
             else -> throw InvalidEngineIOPacketException(encodedData, "Unknown Engine.IO packet type '$packetType'")
         }
+    }
+
+    /**
+     * Encodes the given SocketIO [packet] (wrapped in an EngineIO packet) as a string.
+     *
+     * The result can be directly used as a web socket text frame, unless it's a binary message.
+     * If the packet is a binary message, the resulting text can be sent as a web socket text frame, but must be
+     * followed by as many binary frames as there are binary attachments, in the order defined by their indices.
+     *
+     * This is meant to be used in web socket mode, where each web socket frame contains a single Engine.IO packet.
+     */
+    fun encodeSocketIO(packet: EngineIOPacket<SocketIOPacket>): String = encodeWsFrame(
+        packet = packet,
+        serializePayload = { SocketIO.encode(it) }
+    )
+
+    /**
+     * Encodes the given list of EngineIO [packets] to a text, which can be used as the body of an HTTP batch request.
+     *
+     * For each [EngineIOPacket.Message] packet, the payload is serialized using the provided [serializePayload]
+     * function.
+     *
+     * This is meant to be used in HTTP long-polling mode, where packets are batched in a single HTTP request.
+     * When using web sockets, use [encodeWsFrame] on each frame instead.
+     */
+    fun <T> encodeHttpBatch(packets: List<EngineIOPacket<T>>, serializePayload: (T) -> String): String =
+        // Joining with the "record-separator" character as defined by the protocol:
+        // https://socket.io/docs/v4/engine-io-protocol#http-long-polling-1
+        packets.joinToString("\u001e") { encodeWsFrame(it, serializePayload) }
+
+    /**
+     * Encodes the given [EngineIOPacket] to a string, which can be used as a text web socket frame body.
+     *
+     * If this packet is a [EngineIOPacket.Message] packet, the payload is serialized using the provided
+     * [serializePayload] function.
+     *
+     * This is meant to be used in web socket mode, where each web socket frame contains a single Engine.IO packet.
+     */
+    fun <T> encodeWsFrame(
+        packet: EngineIOPacket<T>,
+        serializePayload: (T) -> String,
+    ): String = when (packet) {
+        is EngineIOPacket.Open -> "0${Json.encodeToString(packet)}"
+        is EngineIOPacket.Close -> "1"
+        is EngineIOPacket.Ping -> "2${packet.payload ?: ""}"
+        is EngineIOPacket.Pong -> "3${packet.payload ?: ""}"
+        is EngineIOPacket.Message<T> -> "4${serializePayload(packet.payload)}"
+        is EngineIOPacket.Upgrade -> "5"
+        is EngineIOPacket.Noop -> "6"
     }
 }
 

@@ -20,61 +20,60 @@ class EngineIOTest {
     }
 
     @Test
+    fun encodeSocketIO_message() {
+        val packet = EngineIOPacket.Message(
+            payload = SocketIOPacket.Event(
+                namespace = "/admin",
+                ackId = 1,
+                payload = buildJsonArray { add("tellme") },
+            ),
+        )
+        val actualTextFrame = EngineIO.encodeSocketIO(packet)
+        assertEquals("""42/admin,1["tellme"]""", actualTextFrame)
+    }
+
+    @Test
     fun decodeWsText_open() {
-        val jsonHandshake = """{
-          "sid": "lv_VI97HAXpY6yYWAAAC",
-          "upgrades": ["websocket"],
-          "pingInterval": 25000,
-          "pingTimeout": 20000,
-          "maxPayload": 1000000
-        }
-        """.trimIndent()
-        val packets = EngineIO.decodeWsFrame(text = "0$jsonHandshake", deserializePayload = { it })
-        val expectedOpenPacket = EngineIOPacket.Open(
+        val jsonHandshake = """{"sid":"lv_VI97HAXpY6yYWAAAC","upgrades":["websocket"],"pingInterval":25000,"pingTimeout":20000,"maxPayload":1000000}"""
+        val encodedData = "0$jsonHandshake"
+        val packet = EngineIOPacket.Open(
             sid = "lv_VI97HAXpY6yYWAAAC",
             upgrades = listOf("websocket"),
             pingInterval = 25000,
             pingTimeout = 20000,
             maxPayload = 1000000,
         )
-        assertEquals(expectedOpenPacket, actual = packets)
+        assertWsTextCodec(packet = packet, encodedData = encodedData)
     }
 
     @Test
     fun decodeWsText_close() {
-        val packets = EngineIO.decodeWsFrame(text = "1", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Close, actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Close, encodedData = "1")
     }
 
     @Test
     fun decodeWsText_ping() {
-        val packets = EngineIO.decodeWsFrame(text = "2", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Ping(payload = null), actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Ping(payload = null), encodedData = "2")
     }
 
     @Test
     fun decodeWsText_ping_withPayload() {
-        val packets = EngineIO.decodeWsFrame(text = "2ping-payload", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Ping(payload = "ping-payload"), actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Ping(payload = "ping-payload"), encodedData = "2ping-payload")
     }
 
     @Test
     fun decodeWsText_pong() {
-        val packets = EngineIO.decodeWsFrame(text = "3", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Pong(payload = null), actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Pong(payload = null), encodedData = "3")
     }
 
     @Test
     fun decodeWsText_pong_withPayload() {
-        val packets = EngineIO.decodeWsFrame(text = "3ping-payload", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Pong(payload = "ping-payload"), actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Pong(payload = "pong-payload"), encodedData = "3pong-payload")
     }
 
     @Test
     fun decodeWsText_message_text() {
-        val packets = EngineIO.decodeWsFrame(text = "4hello, world!", deserializePayload = { it })
-        val expected = EngineIOPacket.Message(payload = "hello, world!")
-        assertEquals(expected, actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Message(payload = "hello, world!"), encodedData = "4hello, world!")
     }
 
     @Test
@@ -99,14 +98,12 @@ class EngineIOTest {
 
     @Test
     fun decodeWsText_upgrade() {
-        val packets = EngineIO.decodeWsFrame(text = "5", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Upgrade, actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Upgrade, encodedData = "5")
     }
 
     @Test
     fun decodeWsText_noop() {
-        val packets = EngineIO.decodeWsFrame(text = "6", deserializePayload = { it })
-        assertEquals(EngineIOPacket.Noop, actual = packets)
+        assertWsTextCodec(packet = EngineIOPacket.Noop, encodedData = "6")
     }
 
     @Test
@@ -205,5 +202,10 @@ class EngineIOTest {
             EngineIOPacket.Message(payload = ByteString(0x1, 0x2, 0x3, 0x4)),
         )
         assertEquals(expected, actual = packets)
+    }
+
+    private fun assertWsTextCodec(packet: EngineIOPacket<String>, encodedData: String) {
+        assertEquals(packet, EngineIO.decodeWsFrame(encodedData, deserializePayload = { it }))
+        assertEquals(encodedData, EngineIO.encodeWsFrame(packet, serializePayload = { it }))
     }
 }

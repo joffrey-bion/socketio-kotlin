@@ -3,6 +3,16 @@ package org.hildan.socketio
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
+private object PacketTypes {
+    const val Connect = 0
+    const val Disconnect = 1
+    const val Event = 2
+    const val Ack = 3
+    const val ConnectError = 4
+    const val BinaryEvent = 5
+    const val BinaryAck = 6
+}
+
 /**
  * The Socket.IO decoder, following the [Socket.IO protocol](https://socket.io/docs/v4/socket-io-protocol).
  */
@@ -42,15 +52,24 @@ object SocketIO {
         throw InvalidSocketIOPacketException(encodedData, "The payload is not valid JSON: $payload", cause = e)
     }
 
-    private fun RawPacket.toSocketIOPacket(): SocketIOPacket = when (packetType) {
-        0 -> SocketIOPacket.Connect(namespace, payload = connectPayload())
-        1 -> SocketIOPacket.Disconnect(namespace)
-        2 -> SocketIOPacket.Event(namespace, ackId, payload = messagePayload())
-        3 -> SocketIOPacket.Ack(namespace, ackId = mandatoryAckId(), payload = messagePayload())
-        4 -> SocketIOPacket.ConnectError(namespace, errorData = payload)
-        5 -> SocketIOPacket.BinaryEvent(namespace, ackId, payload = messagePayload().withPlaceholders(), nBinaryAttachments)
-        6 -> SocketIOPacket.BinaryAck(namespace, ackId = mandatoryAckId(), payload = messagePayload().withPlaceholders(), nBinaryAttachments)
-        else -> invalid("Unknown Socket.IO packet type $packetType")
+    fun encode(packet: SocketIOPacket): String = packet.toRawPacket().encodeToString()
+
+    private fun RawPacket.encodeToString() = buildString {
+        append(packetType)
+        if (nBinaryAttachments > 0) {
+            append(nBinaryAttachments)
+            append('-')
+        }
+        if (namespace != "/") {
+            append(namespace)
+            append(',')
+        }
+        if (ackId != null) {
+            append(ackId)
+        }
+        if (payload != null) {
+            append(Json.encodeToString(payload))
+        }
     }
 }
 
@@ -62,6 +81,76 @@ private data class RawPacket(
     val ackId: Int?,
     val payload: JsonElement?,
 )
+
+private fun RawPacket.toSocketIOPacket(): SocketIOPacket = when (packetType) {
+    PacketTypes.Connect -> SocketIOPacket.Connect(namespace, payload = connectPayload())
+    PacketTypes.Disconnect -> SocketIOPacket.Disconnect(namespace)
+    PacketTypes.Event -> SocketIOPacket.Event(namespace, ackId, payload = messagePayload())
+    PacketTypes.Ack -> SocketIOPacket.Ack(namespace, ackId = mandatoryAckId(), payload = messagePayload())
+    PacketTypes.ConnectError -> SocketIOPacket.ConnectError(namespace, errorData = payload)
+    PacketTypes.BinaryEvent -> SocketIOPacket.BinaryEvent(namespace, ackId, payload = messagePayload().withPlaceholders(), nBinaryAttachments)
+    PacketTypes.BinaryAck -> SocketIOPacket.BinaryAck(namespace, ackId = mandatoryAckId(), payload = messagePayload().withPlaceholders(), nBinaryAttachments)
+    else -> invalid("Unknown Socket.IO packet type $packetType")
+}
+
+private fun SocketIOPacket.toRawPacket(): RawPacket = when (this) {
+    is SocketIOPacket.Connect -> RawPacket(
+        packetType = PacketTypes.Connect,
+        nBinaryAttachments = 0,
+        namespace = namespace,
+        ackId = null,
+        payload = payload,
+        encodedData = "",
+    )
+    is SocketIOPacket.Disconnect -> RawPacket(
+        packetType = PacketTypes.Disconnect,
+        nBinaryAttachments = 0,
+        namespace = namespace,
+        ackId = null,
+        payload = null,
+        encodedData = "",
+    )
+    is SocketIOPacket.Event -> RawPacket(
+        packetType = PacketTypes.Event,
+        nBinaryAttachments = 0,
+        namespace = namespace,
+        ackId = ackId,
+        payload = payload,
+        encodedData = "",
+    )
+    is SocketIOPacket.Ack -> RawPacket(
+        packetType = PacketTypes.Ack,
+        nBinaryAttachments = 0,
+        namespace = namespace,
+        ackId = ackId,
+        payload = payload,
+        encodedData = "",
+    )
+    is SocketIOPacket.ConnectError -> RawPacket(
+        packetType = PacketTypes.ConnectError,
+        nBinaryAttachments = 0,
+        namespace = namespace,
+        ackId = null,
+        payload = errorData,
+        encodedData = "",
+    )
+    is SocketIOPacket.BinaryEvent -> RawPacket(
+        packetType = PacketTypes.BinaryEvent,
+        nBinaryAttachments = nBinaryAttachments,
+        namespace = namespace,
+        ackId = ackId,
+        payload = payload.toJsonArray(),
+        encodedData = "",
+    )
+    is SocketIOPacket.BinaryAck -> RawPacket(
+        packetType = PacketTypes.BinaryAck,
+        nBinaryAttachments = nBinaryAttachments,
+        namespace = namespace,
+        ackId = ackId,
+        payload = payload.toJsonArray(),
+        encodedData = "",
+    )
+}
 
 private fun JsonArray.withPlaceholders(): List<PayloadElement> = map { it.toPayloadElement() }
 
@@ -77,6 +166,16 @@ private val JsonElement.isBinaryPlaceholder: Boolean
         && size == 2
         && (get("_placeholder") as? JsonPrimitive)?.booleanOrNull == true
         && (get("num") as? JsonPrimitive)?.intOrNull != null
+
+private fun List<PayloadElement>.toJsonArray(): JsonArray = JsonArray(map { it.toJsonElement() })
+
+private fun PayloadElement.toJsonElement(): JsonElement = when (this) {
+    is PayloadElement.Json -> jsonElement
+    is PayloadElement.AttachmentRef -> buildJsonObject {
+        put("_placeholder", true)
+        put("num", JsonPrimitive(attachmentIndex))
+    }
+}
 
 // This is not clearly documented in the protocol spec, but the payload for CONNECT has been added in v5 and the
 // official socket.io-parser v4 (for protocol v5) has the following validation which expects JSON object in this case:
