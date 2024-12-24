@@ -1,6 +1,5 @@
 import com.vanniktech.maven.publish.*
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import java.net.*
 
 plugins {
     val kotlinVersion = "2.1.0"
