@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.7.1](https://github.com/joffrey-bion/socketio-kotlin/tree/1.7.1) (2025-01-11)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.7.0...1.7.1)
+
+**Fixed bugs:**
+
+- The array payload for EVENT and ACK packets must not be empty [\#98](https://github.com/joffrey-bion/socketio-kotlin/issues/98)
+
 ## [1.7.0](https://github.com/joffrey-bion/socketio-kotlin/tree/1.7.0) (2025-01-08)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.6.0...1.7.0)
 
