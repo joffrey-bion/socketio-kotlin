@@ -132,7 +132,7 @@ class SocketIOTest {
         val exception = assertFailsWith<InvalidSocketIOPacketException> {
             SocketIO.decode("""2[]""")
         }
-        assertEquals("The array payload for EVENT and ACK packets must not be empty", exception.message)
+        assertEquals("The array payload for EVENT packets must not be empty", exception.message)
         assertEquals("2[]", exception.encodedData)
     }
 
@@ -176,7 +176,29 @@ class SocketIOTest {
     }
 
     @Test
-    fun ack() {
+    fun ack_empty() {
+        val encodedData = """342[]"""
+        val packet = SocketIOPacket.Ack(
+            namespace = "/",
+            ackId = 42,
+            payload = buildJsonArray {},
+        )
+        assertCodec(packet, encodedData)
+    }
+
+    @Test
+    fun ack_withPayload() {
+        val encodedData = """342["bar"]"""
+        val packet = SocketIOPacket.Ack(
+            namespace = "/",
+            ackId = 42,
+            payload = buildJsonArray { add("bar") },
+        )
+        assertCodec(packet, encodedData)
+    }
+
+    @Test
+    fun ack_withNamespace() {
         val encodedData = """3/admin,13["bar"]"""
         val packet = SocketIOPacket.Ack(
             namespace = "/admin",
@@ -193,6 +215,25 @@ class SocketIOTest {
         }
         assertEquals("ACK packet without an Ack ID", exception.message)
         assertEquals("""3/admin,["bar"]""", exception.encodedData)
+    }
+
+    @Test
+    fun ack_namespaceWithoutComma_shouldFailWithMissingId() {
+        // without comma, the '/admin' is considered to be the payload
+        val exception = assertFailsWith<InvalidSocketIOPacketException> {
+            SocketIO.decode("3/admin42")
+        }
+        assertEquals("ACK packet without an Ack ID", exception.message)
+        assertEquals("3/admin42", exception.encodedData)
+    }
+
+    @Test
+    fun ack_objectPayload_shouldFailWithInvalidPayload() {
+        val exception = assertFailsWith<InvalidSocketIOPacketException> {
+            SocketIO.decode("3/admin,42{}")
+        }
+        assertEquals("The payload for EVENT and ACK packets must be a JSON array", exception.message)
+        assertEquals("3/admin,42{}", exception.encodedData)
     }
 
     @Test

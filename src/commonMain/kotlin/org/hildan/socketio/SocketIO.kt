@@ -85,10 +85,10 @@ private data class RawPacket(
 private fun RawPacket.toSocketIOPacket(): SocketIOPacket = when (packetType) {
     PacketTypes.Connect -> SocketIOPacket.Connect(namespace, payload = connectPayload())
     PacketTypes.Disconnect -> SocketIOPacket.Disconnect(namespace)
-    PacketTypes.Event -> SocketIOPacket.Event(namespace, ackId, payload = messagePayload())
+    PacketTypes.Event -> SocketIOPacket.Event(namespace, ackId, payload = nonEmptyMessagePayload())
     PacketTypes.Ack -> SocketIOPacket.Ack(namespace, ackId = mandatoryAckId(), payload = messagePayload())
     PacketTypes.ConnectError -> SocketIOPacket.ConnectError(namespace, errorData = payload)
-    PacketTypes.BinaryEvent -> SocketIOPacket.BinaryEvent(namespace, ackId, payload = messagePayload().withPlaceholders(), nBinaryAttachments)
+    PacketTypes.BinaryEvent -> SocketIOPacket.BinaryEvent(namespace, ackId, payload = nonEmptyMessagePayload().withPlaceholders(), nBinaryAttachments)
     PacketTypes.BinaryAck -> SocketIOPacket.BinaryAck(namespace, ackId = mandatoryAckId(), payload = messagePayload().withPlaceholders(), nBinaryAttachments)
     else -> invalid("Unknown Socket.IO packet type $packetType")
 }
@@ -187,7 +187,9 @@ private fun RawPacket.connectPayload(): JsonObject? {
     return payload as? JsonObject ?: invalid("The payload for CONNECT packets must be a JSON object")
 }
 
-// Reference: https://socket.io/docs/v4/socket-io-protocol#sending-and-receiving-data
+// Reference:
+// https://socket.io/docs/v4/socket-io-protocol#sending-and-receiving-data
+// https://socket.io/docs/v4/socket-io-protocol#acknowledgement
 private fun RawPacket.messagePayload(): JsonArray {
     if (payload == null) {
         invalid("The payload for EVENT and ACK packets is mandatory")
@@ -195,8 +197,14 @@ private fun RawPacket.messagePayload(): JsonArray {
     if (payload !is JsonArray) {
         invalid("The payload for EVENT and ACK packets must be a JSON array")
     }
+    return payload
+}
+
+// Reference: https://socket.io/docs/v4/socket-io-protocol#sending-and-receiving-data
+private fun RawPacket.nonEmptyMessagePayload(): JsonArray {
+    val payload = messagePayload()
     if (payload.isEmpty()) {
-        invalid("The array payload for EVENT and ACK packets must not be empty")
+        invalid("The array payload for EVENT packets must not be empty")
     }
     return payload
 }
