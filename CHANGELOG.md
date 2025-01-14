@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.0.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.0.0) (2025-01-14)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.7.1...2.0.0)
+
+**Breaking changes:**
+
+- Proper support for binary data as EngineIO packets [\#99](https://github.com/joffrey-bion/socketio-kotlin/issues/99)
+
 ## [1.7.1](https://github.com/joffrey-bion/socketio-kotlin/tree/1.7.1) (2025-01-11)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/1.7.0...1.7.1)
 
