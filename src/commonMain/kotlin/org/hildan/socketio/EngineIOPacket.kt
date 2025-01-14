@@ -1,5 +1,6 @@
 package org.hildan.socketio
 
+import kotlinx.io.bytestring.ByteString
 import kotlinx.serialization.Serializable
 
 /**
@@ -50,7 +51,12 @@ sealed interface EngineIOPacket<out T> {
     data class Pong(val payload: String?) : EngineIOPacket<Nothing>
 
     /**
-     * Used to send a payload to the other side.
+     * Used to send a text payload to the other side.
      */
     data class Message<T>(val payload: T) : EngineIOPacket<T>
+
+    /**
+     * Raw binary data sent as a pure binary web socket frame, or as a base64 record in HTTP long-polling mode.
+     */
+    data class BinaryData(val payload: ByteString) : EngineIOPacket<Nothing>
 }
