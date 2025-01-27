@@ -2,7 +2,7 @@ import com.vanniktech.maven.publish.*
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    val kotlinVersion = "2.1.0"
+    val kotlinVersion = "2.1.10"
     kotlin("multiplatform") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("org.jetbrains.dokka") version "2.0.0"
