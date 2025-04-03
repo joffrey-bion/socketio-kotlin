@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.4.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.4.0) (2025-04-03)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.3.0...2.4.0)
+
+**Upgraded dependencies:**
+
+- Bump org.jetbrains.kotlinx:kotlinx\-serialization\-json from 1.8.0 to 1.8.1 [\#108](https://github.com/joffrey-bion/socketio-kotlin/pull/108) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [2.3.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.3.0) (2025-03-20)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.2.0...2.3.0)
 
