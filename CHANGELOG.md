@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.5.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.5.0) (2025-05-26)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.4.0...2.5.0)
+
+**Upgraded dependencies:**
+
+- Bump kotlinVersion from 2.1.20 to 2.1.21 [\#112](https://github.com/joffrey-bion/socketio-kotlin/pull/112) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [2.4.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.4.0) (2025-04-03)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.3.0...2.4.0)
 
