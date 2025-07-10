@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.6.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.6.0) (2025-07-10)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.5.0...2.6.0)
+
+**Upgraded dependencies:**
+
+- Bump org.jetbrains.kotlinx:kotlinx\-serialization\-json from 1.8.1 to 1.9.0 [\#120](https://github.com/joffrey-bion/socketio-kotlin/pull/120) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.jetbrains.kotlinx:kotlinx\-io\-bytestring from 0.7.0 to 0.8.0 [\#119](https://github.com/joffrey-bion/socketio-kotlin/pull/119) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump kotlinVersion from 2.1.21 to 2.2.0 [\#118](https://github.com/joffrey-bion/socketio-kotlin/pull/118) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [2.5.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.5.0) (2025-05-26)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.4.0...2.5.0)
 
