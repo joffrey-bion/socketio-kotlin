@@ -1,4 +1,3 @@
-import com.vanniktech.maven.publish.*
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -77,7 +76,7 @@ kotlin {
 }
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.DEFAULT)
+    publishToMavenCentral()
     signAllPublications()
 
     pom {
