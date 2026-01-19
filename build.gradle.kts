@@ -6,7 +6,7 @@ plugins {
     kotlin("plugin.serialization") version kotlinVersion
     id("org.jetbrains.dokka") version "2.1.0"
     id("org.hildan.github.changelog") version "2.2.0"
-    id("com.vanniktech.maven.publish") version "0.35.0"
+    id("com.vanniktech.maven.publish") version "0.36.0"
     id("ru.vyarus.github-info") version "2.0.0"
 }
 
