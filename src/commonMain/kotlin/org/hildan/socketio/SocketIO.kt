@@ -18,7 +18,12 @@ private object PacketTypes {
  */
 object SocketIO {
 
-    private val packetFormatRegex = Regex("""(?<packetType>\d)((?<nBinaryAttachments>\d+)-)?((?<namespace>/[^,]+),)?(?<ackId>\d+)?(?<payload>.*)?""")
+    // RegexOption.DOT_MATCHES_ALL is not available in common code (missing on some platforms), and `?s` is also not
+    // supported on all platforms, so we artificially use `.|[^.]` to match anything in the payload part.
+    // The JSON parser will decide on its own what is allowed or not.
+    private val packetFormatRegex = Regex(
+        """(?<packetType>\d)((?<nBinaryAttachments>\d+)-)?((?<namespace>/[^,]+),)?(?<ackId>\d+)?(?<payload>(.|[^.])*)?""",
+    )
 
     /**
      * Decodes the given [encodedData] into a [SocketIOPacket].

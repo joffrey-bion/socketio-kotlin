@@ -109,6 +109,22 @@ class SocketIOTest {
     }
 
     @Test
+    fun event_withLineFeed_shouldSucceed() {
+        val encodedData = """2["foo",{"text":"first line \nsecond line"}]"""
+        val packet = SocketIOPacket.Event(
+            namespace = "/",
+            ackId = null,
+            payload = buildJsonArray {
+                add("foo")
+                add(buildJsonObject {
+                    put("text", "first line \nsecond line")
+                })
+            },
+        )
+        assertCodec(packet, encodedData)
+    }
+
+    @Test
     fun event_withoutPayload_shouldFail() {
         val e1 = assertFailsWith<InvalidSocketIOPacketException> {
             SocketIO.decode("2")
