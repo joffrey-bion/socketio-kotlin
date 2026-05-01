@@ -1,5 +1,21 @@
 # Change Log
 
+## [2.7.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.7.0) (2026-05-01)
+[View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.6.0...2.7.0)
+
+**Upgraded dependencies:**
+
+- Bump org.jetbrains.kotlinx:kotlinx\-serialization\-json from 1.9.0 to 1.11.0 [\#163](https://github.com/joffrey-bion/socketio-kotlin/pull/163) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump kotlinVersion from 2.3.20 to 2.3.21 [\#164](https://github.com/joffrey-bion/socketio-kotlin/pull/164) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.jetbrains.kotlinx:kotlinx\-io\-bytestring from 0.8.2 to 0.9.0 [\#153](https://github.com/joffrey-bion/socketio-kotlin/pull/153) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump kotlinVersion from 2.3.10 to 2.3.20 [\#155](https://github.com/joffrey-bion/socketio-kotlin/pull/155) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump kotlinVersion from 2.2.0 to 2.3.10 [\#152](https://github.com/joffrey-bion/socketio-kotlin/pull/152) ([@dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.jetbrains.kotlinx:kotlinx\-io\-bytestring from 0.8.0 to 0.8.2 [\#142](https://github.com/joffrey-bion/socketio-kotlin/pull/142) ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+**Fixed bugs:**
+
+- InvalidSocketIOPacketException caused by Unicode line separator \(U\+2028\) [\#160](https://github.com/joffrey-bion/socketio-kotlin/issues/160)
+
 ## [2.6.0](https://github.com/joffrey-bion/socketio-kotlin/tree/2.6.0) (2025-07-10)
 [View commits](https://github.com/joffrey-bion/socketio-kotlin/compare/2.5.0...2.6.0)
 
