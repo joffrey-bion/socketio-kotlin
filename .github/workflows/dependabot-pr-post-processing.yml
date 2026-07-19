@@ -21,4 +21,4 @@ jobs:
         org.jetbrains.kotlinx.binary-compatibility-validator
         ru.vyarus.github-info
     secrets:
-      github-token: ${{ github.token }}
+      github-token: ${{ secrets.GH_PAT }}
