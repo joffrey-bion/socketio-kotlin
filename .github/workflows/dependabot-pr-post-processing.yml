@@ -4,10 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-permissions:
-  contents: write # to commit yarn.lock files
-  pull-requests: write # to label PRs
-
 jobs:
   dependabot-pr-post-processing:
     uses: joffrey-bion/gh-workflows/.github/workflows/dependabot-pr-post-processing.yml@main
@@ -21,4 +17,4 @@ jobs:
         org.jetbrains.kotlinx.binary-compatibility-validator
         ru.vyarus.github-info
     secrets:
-      github-token: ${{ secrets.GH_PAT }}
+      github-token: ${{ secrets.GH_PAT_FOR_DEPENDABOT }}
