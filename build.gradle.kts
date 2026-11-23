@@ -64,7 +64,7 @@ kotlin {
         commonMain {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0")
-                api("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.9.2")
+                api("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.9.3")
             }
         }
         commonTest {
